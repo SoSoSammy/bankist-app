@@ -80,3 +80,21 @@ const displayMovements = function (movements) {
   });
 };
 displayMovements(account1.movements);
+
+// Create usernames for each account
+const createUsernames = function (accs) {
+  // Loop through the accounts array and create a new username for each account
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      // Separate each name (first, middle, last) from the name
+      .split(' ')
+      // Take the first letter of each name
+      .map(name => name[0])
+      // Join the first letters of each name together
+      .join('');
+  });
+};
+
+createUsernames(accounts);
+console.log(accounts);
