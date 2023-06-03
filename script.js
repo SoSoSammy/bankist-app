@@ -201,8 +201,6 @@ btnTransfer.addEventListener("click", function (e) {
 btnClose.addEventListener("click", function (e) {
   e.preventDefault();
 
-  // Empty the input fields
-
   // If username and pin is correct
   if (
     inputCloseUsername.value === currentAccount.username &&
@@ -224,5 +222,6 @@ btnClose.addEventListener("click", function (e) {
     labelWelcome.textContent = "Log in to get started";
   }
 
+  // Empty the input fields
   inputCloseUsername.value = inputClosePin.value = "";
 });
