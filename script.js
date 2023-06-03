@@ -58,12 +58,15 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 // Display the withdrawals and deposits
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   // Empty the already existing HTML from the container
   containerMovements.innerHTML = "";
 
+  // If sort = true, sort the movements array in ascending order (will appear as descending)
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
   // Loop through the movements array and create a new movements row for each movement
-  movements.forEach(function (mov, i) {
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
     const html = `
@@ -243,4 +246,15 @@ btnClose.addEventListener("click", function (e) {
 
   // Clear input fields
   inputCloseUsername.value = inputClosePin.value = "";
+});
+
+// Sort movements
+let sorted = false;
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+  // When sorted is false, then we want to sort the movements
+  // If the movements are already sorted, then we want to return them to their original order
+  displayMovements(currentAccount.movements, !sorted);
+  // Flip the sorted variable
+  sorted = !sorted;
 });
