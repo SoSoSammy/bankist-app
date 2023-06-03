@@ -179,7 +179,7 @@ btnTransfer.addEventListener("click", function (e) {
     acc => acc.username === inputTransferTo.value
   );
 
-  // Empty the input fields
+  // Clear input fields
   inputTransferAmount.value = inputTransferTo.value = "";
 
   // If the amount is greater than 0, the receiver accont exists, and the current account has enough money, then transfer the money
@@ -196,6 +196,25 @@ btnTransfer.addEventListener("click", function (e) {
     // Update UI
     updateUI(currentAccount);
   }
+});
+
+// Request a loan
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  // If there is any deposit that is greater than or equal to 10% of the requested loan amount, then grant the loan
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+
+  // Clear input field
+  inputLoanAmount.value = "";
 });
 
 btnClose.addEventListener("click", function (e) {
@@ -222,6 +241,6 @@ btnClose.addEventListener("click", function (e) {
     labelWelcome.textContent = "Log in to get started";
   }
 
-  // Empty the input fields
+  // Clear input fields
   inputCloseUsername.value = inputClosePin.value = "";
 });
