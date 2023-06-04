@@ -19,9 +19,9 @@ const account1 = {
     "2020-01-28T09:15:04.904Z",
     "2020-04-01T10:17:24.185Z",
     "2020-05-08T14:11:59.604Z",
-    "2020-05-27T17:01:17.194Z",
-    "2020-07-11T23:36:17.929Z",
-    "2020-07-12T10:51:36.790Z",
+    "2023-05-29T17:01:17.194Z",
+    "2023-05-31T23:36:17.929Z",
+    "2023-06-03T10:51:36.790Z",
   ],
   currency: "EUR",
   locale: "pt-PT", // de-DE
@@ -79,6 +79,28 @@ const inputClosePin = document.querySelector(".form__input--pin");
 /////////////////////////////////////////////////
 // Functions
 
+// Format the movement date
+const formatMovementDate = function (date, locale) {
+  // Calculate the days that have passed from today and the movement date
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+  const daysPassed = calcDaysPassed(new Date(), date);
+  console.log(daysPassed);
+
+  if (daysPassed === 0) return "Today";
+  if (daysPassed === 1) return "Yesterday";
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // return `${day}/${month}/${year}`;
+
+  // If the date is more than 7 days ago, then format the date according to user's locale
+  return new Intl.DateTimeFormat(locale).format(date);
+};
+
 // Display the withdrawals and deposits
 const displayMovements = function (acc, sort = false) {
   // Empty the already existing HTML from the container
@@ -94,11 +116,7 @@ const displayMovements = function (acc, sort = false) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
     const date = new Date(acc.movementsDates[i]);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = date.getFullYear();
-
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = formatMovementDate(date, acc.locale);
 
     const html = `
         <div class="movements__row">
@@ -196,21 +214,36 @@ btnLogin.addEventListener("click", function (e) {
 
   // If the currentAccount exists, check the pin
   if (currentAccount?.pin === +inputLoginPin.value) {
-    // Create current date and time
-    // day/month/year
-    const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
     // Display welcome message and UI
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(" ")[0] // First name of the owner
     }`;
     containerApp.style.opacity = 100;
+
+    // Create current date and time
+    const now = new Date();
+    const options = {
+      hour: "numeric",
+      minute: "numeric",
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+      // weekday: "long",
+    };
+    // const locale = navigator.language;
+    // console.log(locale);
+
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
+
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const year = now.getFullYear();
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const min = `${now.getMinutes()}`.padStart(2, 0);
+    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
     // Clear input fields and remove focus
     inputLoginUsername.value = inputLoginPin.value = "";
