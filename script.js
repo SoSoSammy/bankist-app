@@ -74,7 +74,7 @@ const displayMovements = function (movements, sort = false) {
           <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-          <div class="movements__value">${mov}€</div>
+          <div class="movements__value">${mov.toFixed(2)}€</div>
         </div>
     `;
 
@@ -94,13 +94,13 @@ const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
 
   // Add up all withdrawals and take the absolute value of it
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
 
   // Get deposits then add interest on them and add them up
   const interest = acc.movements
@@ -112,7 +112,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 // Create usernames for each account
@@ -156,7 +156,7 @@ btnLogin.addEventListener("click", function (e) {
   console.log(currentAccount);
 
   // If the currentAccount exists, check the pin
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === +inputLoginPin.value) {
     // Display welcome message and UI
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(" ")[0] // First name of the owner
@@ -177,7 +177,7 @@ btnLogin.addEventListener("click", function (e) {
 btnTransfer.addEventListener("click", function (e) {
   // Prevent form submission and page refresh
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
@@ -205,7 +205,7 @@ btnTransfer.addEventListener("click", function (e) {
 btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
 
   // If there is any deposit that is greater than or equal to 10% of the requested loan amount, then grant the loan
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
@@ -226,7 +226,7 @@ btnClose.addEventListener("click", function (e) {
   // If username and pin is correct
   if (
     inputCloseUsername.value === currentAccount.username &&
-    Number(inputClosePin.value) === currentAccount.pin
+    +inputClosePin.value === currentAccount.pin
   ) {
     const index = accounts.findIndex(
       acc => acc.username === currentAccount.username
